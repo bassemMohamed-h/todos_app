@@ -18,14 +18,14 @@ class AppTheme{
         fontWeight: FontWeight.normal,
         fontFamily: 'Arial',
         fontSize: 14,
-        color: lightPrimaryColor,
+        color: Colors.black,
 
     ),
       displaySmall: TextStyle(
           fontWeight: FontWeight.normal,
           fontFamily: 'Roboto',
           fontSize: 12,
-          color: lightPrimaryColor,
+          color: Colors.black,
         )
     ),
     appBarTheme: AppBarTheme(
@@ -41,11 +41,13 @@ class AppTheme{
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
       selectedItemColor: lightPrimaryColor,
-
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: lightPrimaryColor,
-      elevation: 4,
+      iconSize: 25,
+      shape: StadiumBorder(side: BorderSide(color: Colors.white,width: 4)),
     )
   );
 
