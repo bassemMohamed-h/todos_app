@@ -5,13 +5,13 @@ import 'package:date_picker_timeline/date_picker_timeline.dart';
 
 
 class TodosScreen extends StatefulWidget {
+  static DateTime selectedDate = DateTime.now();
 
   @override
   State<TodosScreen> createState() => _TodosScreenState();
 }
 
 class _TodosScreenState extends State<TodosScreen> {
-  DateTime selectedDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -26,10 +26,9 @@ class _TodosScreenState extends State<TodosScreen> {
             selectedTextColor: Colors.white,
             onDateChange: (date) {
               // New date selected
-              selectedDate = date;
-              print(selectedDate);
-              setState(() {
-              });
+              TodosScreen.selectedDate = date;
+
+              setState(() {});
             },
           ),
         ),
