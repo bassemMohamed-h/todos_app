@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todos_app/providers/todoControllerProvider.dart';
 import 'package:todos_app/theme/appTheme.dart';
 
 import 'home.dart';
@@ -8,20 +10,20 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Todos App',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.lightTheme,
-      themeMode: ThemeMode.light,
-      routes: {
-        Home.routeName : (context)=> Home(),
-      },
-      initialRoute: Home.routeName,
+    return ChangeNotifierProvider(
+      create: (_) => TodoControllerProvider(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: AppTheme.lightTheme,
+        themeMode: ThemeMode.light,
+        routes: {Home.routeName: (_) => Home()},
+        initialRoute: Home.routeName,
+      ),
     );
   }
 }

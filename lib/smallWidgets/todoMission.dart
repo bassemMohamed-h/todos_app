@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 class TodoMission extends StatelessWidget {
+  int index;
+
+  TodoMission({required this.index});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(15,0,15,20),
+      margin: const EdgeInsets.fromLTRB(15, 0, 15, 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: Colors.white,
@@ -33,11 +36,11 @@ class TodoMission extends StatelessWidget {
           ),
           const Spacer(),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 12),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-              borderRadius: BorderRadius.circular(15)
-            ),
+              padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 12),
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(15)
+              ),
               child: const Icon(Icons.check,color: Colors.white,))
         ],
       ),

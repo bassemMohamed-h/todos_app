@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../model/todoModel.dart';
-import '../screens/TodosScreen.dart';
+import '../providers/todoControllerProvider.dart';
 
 class AddNewTodo extends StatefulWidget {
   @override
@@ -9,26 +10,31 @@ class AddNewTodo extends StatefulWidget {
 }
 
 class _AddNewTodoState extends State<AddNewTodo> {
+  late TodoControllerProvider todoControllerProvider;
   String taskName = '';
   String taskDescription = '';
-  DateTime startDate = TodosScreen.selectedDate;
-  DateTime endDate = TodosScreen.selectedDate;
+  DateTime endDate = DateTime(2010);
   List<TodoModel> todosOfDay = [];
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    todoControllerProvider = Provider.of(context);
+    if (endDate == DateTime(2010)) {
+      endDate = todoControllerProvider.selectedDate;
+    }
     return Container(
       margin: const EdgeInsets.all(12),
       child: Form(
         key: _formKey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text('Add Task',style: Theme.of(context).textTheme.displayLarge,textAlign: TextAlign.center),
+            Text('Add Task',
+                style: Theme.of(context).textTheme.displayLarge,
+                textAlign: TextAlign.center),
             TextFormField(
-              validator: (text){
+              validator: (text) {
                 if(text==null || text.isEmpty){
                   return 'please enter title for task';
                 }else{return null;}
@@ -36,7 +42,7 @@ class _AddNewTodoState extends State<AddNewTodo> {
               decoration: const InputDecoration(
                 hintText: 'Please Add New Task',
               ),
-             onChanged: (task){taskName = task;},
+              onChanged: (task){taskName = task;},
             ),
             TextFormField(
               validator: (text){
@@ -52,24 +58,31 @@ class _AddNewTodoState extends State<AddNewTodo> {
             ),
             Text('Select Dead Line Date',style: Theme.of(context).textTheme.displayMedium,textAlign: TextAlign.left),
             InkWell(
+                hoverColor: Colors.transparent,
                 onTap: () async {
                   /// Open Calendar
                   endDate = (await showDatePicker(
-                      context: context,
-                      initialDate: endDate,
-                      firstDate: startDate,
-                      lastDate:DateTime(2023,12,31),
-                  ))??endDate;
-                  setState((){});
+                        context: context,
+                        currentDate: todoControllerProvider.selectedDate,
+                        initialDate: endDate,
+                        firstDate: todoControllerProvider.selectedDate,
+                        lastDate: DateTime(2023, 12, 31),
+                      )) ??
+                      endDate;
+                  setState(() {});
                 },
                 child: Text(
                     '${endDate.day} / ${endDate.month} / ${endDate.year}',
-                    style: Theme.of(context).textTheme.displayMedium,textAlign: TextAlign.center)
-            ),
+                    style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontFamily: 'Arial',
+                        fontSize: 14,
+                        color: Theme.of(context).primaryColor),
+                    textAlign: TextAlign.center)),
             ElevatedButton(
                 onPressed: (){
                   saveTodo();
-                  },
+                },
                 child: const Icon(Icons.check))
 
           ],
@@ -80,7 +93,7 @@ class _AddNewTodoState extends State<AddNewTodo> {
 
   void saveTodo() {
     if(!_formKey.currentState!.validate()) return;
-    /// todo save todo to locale storage
 
+    /// todo save todo to locale storage
   }
 }

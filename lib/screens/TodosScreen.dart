@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/todoControllerProvider.dart';
 import '../smallWidgets/todoMission.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 
 
 class TodosScreen extends StatefulWidget {
-  static DateTime selectedDate = DateTime.now();
 
   @override
   State<TodosScreen> createState() => _TodosScreenState();
 }
 
 class _TodosScreenState extends State<TodosScreen> {
+  late TodoControllerProvider todoControllerProvider;
+
   @override
   Widget build(BuildContext context) {
+    todoControllerProvider = Provider.of(context);
     return Column(
       children: [
         const SizedBox(height: 20),
@@ -22,13 +26,11 @@ class _TodosScreenState extends State<TodosScreen> {
           child: DatePicker(
             DateTime.now(),
             initialSelectedDate: DateTime.now(),
-            selectionColor:Theme.of(context).primaryColor,
+            selectionColor: Theme.of(context).primaryColor,
             selectedTextColor: Colors.white,
             onDateChange: (date) {
               // New date selected
-              TodosScreen.selectedDate = date;
-
-              setState(() {});
+              todoControllerProvider.setSelectedDate(date);
             },
           ),
         ),
@@ -36,8 +38,7 @@ class _TodosScreenState extends State<TodosScreen> {
         Expanded(
             child: ListView.builder(
                 itemCount: 2,
-                itemBuilder: (context, index) => TodoMission()
-            )
+                itemBuilder: (context, index) => TodoMission(index: index))
         ),
       ],
     );
