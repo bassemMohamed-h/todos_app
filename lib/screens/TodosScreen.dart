@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import '../model/todoModel.dart';
 import '../providers/todoControllerProvider.dart';
 import '../smallWidgets/todoMission.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 
-
 class TodosScreen extends StatefulWidget {
-
   @override
   State<TodosScreen> createState() => _TodosScreenState();
 }
@@ -31,15 +29,19 @@ class _TodosScreenState extends State<TodosScreen> {
             onDateChange: (date) {
               // New date selected
               todoControllerProvider.setSelectedDate(date);
+              todoControllerProvider.getTodos();
             },
           ),
         ),
         const SizedBox(height: 20),
         Expanded(
             child: ListView.builder(
-                itemCount: 2,
-                itemBuilder: (context, index) => TodoMission(index: index))
-        ),
+                itemCount: todoControllerProvider.todosOfSelectedDay.length,
+                itemBuilder: (context, index) => TodoMission(
+                      index: index,
+                      todoModel:
+                          todoControllerProvider.todosOfSelectedDay[index],
+                    ))),
       ],
     );
   }

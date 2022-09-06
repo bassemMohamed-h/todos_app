@@ -13,16 +13,14 @@ class _AddNewTodoState extends State<AddNewTodo> {
   late TodoControllerProvider todoControllerProvider;
   String taskName = '';
   String taskDescription = '';
-  DateTime endDate = DateTime(2010);
+  DateTime? endDate;
   List<TodoModel> todosOfDay = [];
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     todoControllerProvider = Provider.of(context);
-    if (endDate == DateTime(2010)) {
-      endDate = todoControllerProvider.selectedDate;
-    }
+    endDate ??= DateUtils.dateOnly(todoControllerProvider.selectedDate);
     return Container(
       margin: const EdgeInsets.all(12),
       child: Form(
@@ -62,9 +60,9 @@ class _AddNewTodoState extends State<AddNewTodo> {
                 onTap: () async {
                   /// Open Calendar
                   endDate = (await showDatePicker(
-                        context: context,
+                    context: context,
                         currentDate: todoControllerProvider.selectedDate,
-                        initialDate: endDate,
+                        initialDate: endDate!,
                         firstDate: todoControllerProvider.selectedDate,
                         lastDate: DateTime(2023, 12, 31),
                       )) ??
@@ -72,16 +70,17 @@ class _AddNewTodoState extends State<AddNewTodo> {
                   setState(() {});
                 },
                 child: Text(
-                    '${endDate.day} / ${endDate.month} / ${endDate.year}',
+                    '${endDate!.year}/${endDate!.month}/${endDate!.day}',
                     style: TextStyle(
                         fontWeight: FontWeight.normal,
                         fontFamily: 'Arial',
-                        fontSize: 14,
+                        fontSize: 16,
                         color: Theme.of(context).primaryColor),
                     textAlign: TextAlign.center)),
             ElevatedButton(
                 onPressed: (){
                   saveTodo();
+                  Navigator.pop(context);
                 },
                 child: const Icon(Icons.check))
 
@@ -92,8 +91,14 @@ class _AddNewTodoState extends State<AddNewTodo> {
   }
 
   void saveTodo() {
-    if(!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
+    TodoModel todoModel = TodoModel(
+        taskName: taskName,
+        taskDescription: taskDescription,
+        endDate: endDate!);
 
     /// todo save todo to locale storage
+    todoControllerProvider.addTodo(todoModel);
+    todoControllerProvider.getTodos();
   }
 }

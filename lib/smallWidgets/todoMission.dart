@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../model/todoModel.dart';
+
 class TodoMission extends StatelessWidget {
   int index;
+  TodoModel todoModel;
 
-  TodoMission({required this.index});
+  TodoMission({required this.index, required this.todoModel});
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +27,23 @@ class TodoMission extends StatelessWidget {
           ),
           Column(
             children: [
-              Text('Mission',style: Theme.of(context).textTheme.displayLarge,),
+              Text(
+                todoModel.taskName,
+                style: Theme.of(context).textTheme.displayLarge,
+              ),
               Row(
                 children: [
-                  Icon(Icons.timer_outlined,size: 20,),
-                  SizedBox(width: 10,),
-                  Text('Mission End Time',style: Theme.of(context).textTheme.displaySmall,),
+                  Icon(
+                    Icons.timer_outlined,
+                    size: 20,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    '${todoModel.endDate.day}/${todoModel.endDate.month}/${todoModel.endDate.year}',
+                    style: Theme.of(context).textTheme.displaySmall,
+                  ),
                 ],
               )
             ],
