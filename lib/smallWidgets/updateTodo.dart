@@ -3,23 +3,35 @@ import 'package:provider/provider.dart';
 import '../model/todoModel.dart';
 import '../providers/todoControllerProvider.dart';
 
-class AddNewTodo extends StatefulWidget {
+class UpdateTodo extends StatefulWidget {
+  int index;
+  TodoModel todoOfDay;
+
+  UpdateTodo({required this.todoOfDay, required this.index});
+
   @override
-  State<AddNewTodo> createState() => _AddNewTodoState();
+  State<UpdateTodo> createState() => _UpdateTodoState();
 }
 
-class _AddNewTodoState extends State<AddNewTodo> {
-  late TodoControllerProvider todoControllerProvider;
+class _UpdateTodoState extends State<UpdateTodo> {
   String taskName = '';
-  String taskDescription = '';
-  DateTime? endDate;
-  List<TodoModel> todosOfDay = [];
+
+  late String taskDescription;
+
+  late DateTime endDate;
+
+  late TodoControllerProvider todoControllerProvider;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     todoControllerProvider = Provider.of(context);
-    endDate ??= DateUtils.dateOnly(todoControllerProvider.selectedDate);
+    if (taskName.isEmpty) {
+      taskName = widget.todoOfDay.taskName;
+      taskDescription = widget.todoOfDay.taskDescription;
+      endDate = widget.todoOfDay.endDate;
+    }
     return Container(
       margin: const EdgeInsets.all(12),
       child: Form(
@@ -27,49 +39,54 @@ class _AddNewTodoState extends State<AddNewTodo> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text('Add Task',
+            Text('Update Task',
                 style: Theme.of(context).textTheme.displayLarge,
                 textAlign: TextAlign.center),
             TextFormField(
               validator: (text) {
-                if(text==null || text.isEmpty){
+                if (text == null || text.isEmpty) {
                   return 'please enter title for task';
-                }else{return null;}
+                } else {
+                  return null;
+                }
               },
-              decoration: const InputDecoration(
-                hintText: 'Please Add New Task',
-              ),
-              onChanged: (task){taskName = task;},
+              initialValue: taskName,
+              onChanged: (task) {
+                taskName = task;
+              },
             ),
             TextFormField(
-              validator: (text){
-                if(text==null || text.isEmpty){
+              validator: (text) {
+                if (text == null || text.isEmpty) {
                   return 'please enter description for task';
-                }else{return null;}
+                } else {
+                  return null;
+                }
               },
-              decoration: const InputDecoration(
-                hintText: 'Add description To task',
-              ),
+              initialValue: taskDescription,
               maxLines: 3,
-              onChanged: (description){taskDescription = description;},
+              onChanged: (description) {
+                taskDescription = description;
+              },
             ),
-            Text('Select Dead Line Date',style: Theme.of(context).textTheme.displayMedium,textAlign: TextAlign.left),
+            Text('Update Dead Line Date',
+                style: Theme.of(context).textTheme.displayMedium,
+                textAlign: TextAlign.left),
             InkWell(
                 hoverColor: Colors.transparent,
                 onTap: () async {
                   /// Open Calendar
                   endDate = (await showDatePicker(
-                    context: context,
+                        context: context,
                         currentDate: todoControllerProvider.selectedDate,
-                        initialDate: endDate!,
+                        initialDate: endDate,
                         firstDate: todoControllerProvider.selectedDate,
                         lastDate: DateTime(2023, 12, 31),
                       )) ??
                       endDate;
                   setState(() {});
                 },
-                child: Text(
-                    '${endDate!.year}/${endDate!.month}/${endDate!.day}',
+                child: Text('${endDate.year}/${endDate.month}/${endDate.day}',
                     style: TextStyle(
                         fontWeight: FontWeight.normal,
                         fontFamily: 'Arial',
@@ -77,26 +94,23 @@ class _AddNewTodoState extends State<AddNewTodo> {
                         color: Theme.of(context).primaryColor),
                     textAlign: TextAlign.center)),
             ElevatedButton(
-                onPressed: (){
-                  saveTodo();
+                onPressed: () {
+                  updateTodo();
                 },
                 child: const Icon(Icons.check))
-
           ],
         ),
       ),
     );
   }
 
-  void saveTodo() {
+  void updateTodo() {
     if (!_formKey.currentState!.validate()) return;
     TodoModel todoModel = TodoModel(
-        taskName: taskName,
-        taskDescription: taskDescription,
-        endDate: endDate!);
+        taskName: taskName, taskDescription: taskDescription, endDate: endDate);
 
     /// todo save todo to locale storage
-    todoControllerProvider.addTodo(todoModel);
+    todoControllerProvider.updateTodo(widget.index, todoModel);
     todoControllerProvider.getTodos();
     Navigator.pop(context);
   }

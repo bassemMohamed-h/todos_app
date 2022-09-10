@@ -3,7 +3,7 @@ import 'package:todos_app/model/todoModel.dart';
 
 class TodoControllerProvider extends ChangeNotifier {
   DateTime selectedDate = DateUtils.dateOnly(DateTime.now());
-  Map<String, List<TodoModel>> allTodo = {};
+  Map<String, List<TodoModel>> allTodos = {};
   List<TodoModel> todosOfSelectedDay = [];
 
   setSelectedDate(DateTime newSelectedDate) {
@@ -12,19 +12,33 @@ class TodoControllerProvider extends ChangeNotifier {
   }
 
   addTodo(TodoModel newTodo) {
-    if (allTodo.containsKey(selectedDate.toString())) {
-      allTodo[selectedDate.toString()]!.add(newTodo);
+    if (allTodos.containsKey(selectedDate.toString())) {
+      allTodos[selectedDate.toString()]!.add(newTodo);
       notifyListeners();
-      print(allTodo[selectedDate.toString()]);
     } else {
-      allTodo[selectedDate.toString()] = [newTodo];
+      allTodos[selectedDate.toString()] = [newTodo];
       notifyListeners();
-      print(allTodo[selectedDate.toString()]);
     }
   }
 
   getTodos() {
-    todosOfSelectedDay = allTodo[selectedDate.toString()] ?? [];
+    todosOfSelectedDay = allTodos[selectedDate.toString()] ?? [];
+    notifyListeners();
+  }
+
+  updateTodo(int index, TodoModel todo) {
+    if (todo != todosOfSelectedDay[index]) {
+      /*allTodos[selectedDate.toString()]![index] = TodoModel(
+          taskName: todo.taskName,
+          taskDescription: todo.taskDescription,
+          endDate: todo.endDate);*/
+      todosOfSelectedDay[index] = todo;
+      notifyListeners();
+    }
+  }
+
+  deleteTodo(int index) {
+    todosOfSelectedDay.removeAt(index);
     notifyListeners();
   }
 }
