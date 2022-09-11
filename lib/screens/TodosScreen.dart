@@ -18,13 +18,18 @@ class _TodosScreenState extends State<TodosScreen> {
   @override
   Widget build(BuildContext context) {
     todoControllerProvider = Provider.of(context);
+    if (todoControllerProvider.firstVisit == null) {
+      todoControllerProvider.setStartDate();
+    }
+
     return Column(
       children: [
         const SizedBox(height: 20),
         SizedBox(
           height: 84,
           child: DatePicker(
-            DateTime.now(),
+            DateTime.fromMicrosecondsSinceEpoch(
+                todoControllerProvider.startDate),
             initialSelectedDate: DateTime.now(),
             selectionColor: Theme.of(context).primaryColor,
             selectedTextColor: Colors.white,
